@@ -1,0 +1,344 @@
+{
+  "datasets": [
+    {
+      "name": "ede215ed",
+      "displayName": "sales_transactions",
+      "queryLines": [
+        "SELECT * FROM samples.bakehouse.sales_transactions"
+      ]
+    },
+    {
+      "name": "5dbbc63c",
+      "displayName": "from notebook",
+      "queryLines": [
+        "SELECT product, sum(total_price)\r\n",
+        "FROM sales\r\n",
+        "GROUP BY product\r\n",
+        "ORDER BY sum(total_price) DESC"
+      ],
+      "catalog": "workspace",
+      "schema": "google_drive"
+    },
+    {
+      "name": "59966391",
+      "displayName": "sales_desc",
+      "queryLines": [
+        "SELECT product, SUM(totalprice)\r\n",
+        "FROM samples.bakehouse.sales_transactions\r\n",
+        "GROUP by product\r\n",
+        "ORDER BY SUM(totalprice) DESC"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "a074609b",
+      "displayName": "dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "c310cb17",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "59966391",
+                  "fields": [
+                    {
+                      "name": "sum(sum(totalprice))",
+                      "expression": "SUM(`sum(totalprice)`)"
+                    },
+                    {
+                      "name": "product",
+                      "expression": "`product`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": false,
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(sum(totalprice))",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "product",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(sum(totalprice))",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "greenblue"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "63fe6800",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ede215ed",
+                  "fields": [
+                    {
+                      "name": "count(paymentMethod)",
+                      "expression": "COUNT(`paymentMethod`)"
+                    },
+                    {
+                      "name": "paymentMethod",
+                      "expression": "`paymentMethod`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(paymentMethod)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "paymentMethod",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "8087b2e9",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ede215ed",
+                  "fields": [
+                    {
+                      "name": "daily(dateTime)",
+                      "expression": "DATE_TRUNC(\"DAY\", `dateTime`)"
+                    },
+                    {
+                      "name": "sum(quantity)",
+                      "expression": "SUM(`quantity`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(dateTime)",
+                  "displayName": "date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(quantity)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "81575710",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\"><span style=\"font-size: 48px;line-height: 1.5;\">**Transaction Dashboard**</span></span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "9fca26eb",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ede215ed",
+                  "fields": [
+                    {
+                      "name": "sum(totalPrice)",
+                      "expression": "SUM(`totalPrice`)"
+                    },
+                    {
+                      "name": "product",
+                      "expression": "`product`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(totalPrice)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "product",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(totalPrice)",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "greenblue"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "de31a0dc",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "0dc09276",
+            "queries": [
+              {
+                "name": "dashboards/01f13b1947dc1ec2ad319059a9ced37b/datasets/01f13b19b77e16649a64a6004913233a_quantity",
+                "query": {
+                  "datasetName": "ede215ed",
+                  "fields": [
+                    {
+                      "name": "min(quantity)",
+                      "expression": "MIN(`quantity`)"
+                    },
+                    {
+                      "name": "max(quantity)",
+                      "expression": "MAX(`quantity`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "range-slider",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "quantity",
+                    "queryName": "dashboards/01f13b1947dc1ec2ad319059a9ced37b/datasets/01f13b19b77e16649a64a6004913233a_quantity"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

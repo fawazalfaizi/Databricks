@@ -1,0 +1,306 @@
+{
+  "datasets": [
+    {
+      "name": "f6ca9bd4",
+      "displayName": "location",
+      "queryLines": [
+        "SELECT latitude, longitude,\r\n",
+        "`GHG emissions mtons CO2e` AS emissions\r\n",
+        "FROM emissions_data"
+      ],
+      "catalog": "emissions",
+      "schema": "default"
+    },
+    {
+      "name": "aa587306",
+      "displayName": "emission per person",
+      "queryLines": [
+        "SELECT\r\n",
+        "  county_state_name,\r\n",
+        "  population,\r\n",
+        "  (CAST(REPLACE(`GHG emissions mtons CO2e`, ',', '') AS DOUBLE) / population) AS emission_per_person\r\n",
+        "FROM\r\n",
+        "  emissions.default.emissions_data\r\n",
+        "WHERE\r\n",
+        "  population > 0\r\n",
+        "ORDER BY\r\n",
+        "  emission_per_person DESC\r\n"
+      ],
+      "catalog": "emissions",
+      "schema": "default"
+    },
+    {
+      "name": "09cf2365",
+      "displayName": "top_states",
+      "queryLines": [
+        "SELECT\r\n",
+        "   state_abbr,\r\n",
+        "  SUM(CAST(REPLACE(`GHG emissions mtons CO2e`, ',', '') AS DOUBLE) / population) AS Total_emission\r\n",
+        "FROM\r\n",
+        "  emissions.default.emissions_data\r\n",
+        "WHERE\r\n",
+        "  population > 0\r\n",
+        "GROUP BY\r\n",
+        "  state_abbr\r\n",
+        "ORDER BY\r\n",
+        "  Total_emission DESC\r\n",
+        "LIMIT\r\n",
+        "  10"
+      ]
+    },
+    {
+      "name": "4abfbbac",
+      "displayName": "county",
+      "queryLines": [
+        "SELECT\r\n",
+        "   county_state_name,\r\n",
+        "   population,\r\n",
+        "  CAST(REPLACE(`GHG emissions mtons CO2e`, ',', '') AS DOUBLE) AS Total_emission\r\n",
+        "FROM\r\n",
+        "  emissions.default.emissions_data\r\n",
+        "WHERE\r\n",
+        "  population > 0\r\n",
+        "ORDER BY\r\n",
+        "  Total_emission DESC\r\n",
+        "LIMIT\r\n",
+        "  10"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "0634285e",
+      "displayName": "Dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "09b0bf62",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f6ca9bd4",
+                  "fields": [
+                    {
+                      "name": "latitude",
+                      "expression": "`latitude`"
+                    },
+                    {
+                      "name": "longitude",
+                      "expression": "`longitude`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "mark": {
+                "size": -2.5
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "longitude"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "d2e63264",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\"><span style=\"font-size:36px;line-height:1.5\">**Emissions data of usa**</span></span>\n",
+                "<p>&nbsp;</p>\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "50e7a1c7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "aa587306",
+                  "fields": [
+                    {
+                      "name": "emission_per_person",
+                      "expression": "`emission_per_person`"
+                    },
+                    {
+                      "name": "population",
+                      "expression": "`population`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {
+                "size": -1.6
+              },
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "emission_per_person",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "population",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "ab0dcde8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "09cf2365",
+                  "fields": [
+                    {
+                      "name": "sum(Total_emission)",
+                      "expression": "SUM(`Total_emission`)"
+                    },
+                    {
+                      "name": "state_abbr",
+                      "expression": "`state_abbr`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(Total_emission)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total emission"
+                },
+                "color": {
+                  "fieldName": "state_abbr",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "45c89a64",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "4abfbbac",
+                  "fields": [
+                    {
+                      "name": "sum(Total_emission)",
+                      "expression": "SUM(`Total_emission`)"
+                    },
+                    {
+                      "name": "county_state_name",
+                      "expression": "`county_state_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(Total_emission)",
+                  "displayName": "Total emission",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "county_state_name",
+                  "displayName": "County name",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
